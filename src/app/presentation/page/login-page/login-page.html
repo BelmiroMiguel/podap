@@ -1,0 +1,90 @@
+<div class="min-h-screen flex flex-col md:flex-row bg-surface-50">
+
+  <!-- Lado Esquerdo: Identidade Visual (Oculto em Mobile) -->
+  <div class="hidden md:flex md:w-1/2 lg:w-3/5 bg-primary p-12 flex-col justify-between relative overflow-hidden"
+    style="background-color: var(--p-primary-500);">
+
+    <!-- Ícone de fundo decorativo -->
+    <i class="pi pi-shield absolute -right-20 -bottom-20 text-[30rem] opacity-10 rotate-12"></i>
+
+    <div class="flex items-center gap-3 relative z-10">
+      <div class="bg-white p-2 rounded-2xl flex items-center justify-center">
+        <i class="pi pi-search text-primary text-2xl"></i>
+      </div>
+      <span pRipple [routerLink]="['/']"
+        class="text-3xl cursor-pointer font-black text-white tracking-tighter italic pr-4">PODAP</span>
+    </div>
+
+    <div class="relative z-10 max-w-lg">
+      <h1 class="text-5xl font-bold text-white leading-tight mb-6">Recuperar o que é seu é o nosso dever.</h1>
+      <p class="text-blue-100 text-lg opacity-80">
+        Portal de objetos, documentos Perdidos & Achados.
+      </p>
+    </div>
+
+    <div class="text-blue-200 text-sm relative z-10">
+      © 2026 PODAP. Todos os direitos reservados.
+    </div>
+  </div>
+
+  <!-- Lado Direito: Formulário -->
+  <div class="flex-1 flex items-center justify-center p-8 md:p-16">
+    <div class="w-full max-w-md">
+
+      <div class="mb-10">
+        <h2 class="text-3xl font-black text-primary-900 mb-2" style="color: var(--p-primary-900);">Bem-vindo</h2>
+        <p class="text-slate-500">Introduza os seus dados para aceder à plataforma.</p>
+      </div>
+
+      <form [formGroup]="formLogin" class="space-y-6" (ngSubmit)="onSubmit()">
+        <!-- Campo Login -->
+        <div class="flex flex-col ">
+          <label class="text-sm font-bold text-slate-700 ml-4">E-mail ou Utilizador</label>
+          <input formControlName="login" type="text" pInputText placeholder="" class="w-full py-4! px-6! mt-2" />
+          <app-text-error-input-form class="p-0 m-0"
+            [expression]="formLogin.get('login')?.errors?.['required'] && formLogin.get('login')?.touched"
+            message="Email é obrigatório">
+          </app-text-error-input-form>
+
+          <app-text-error-input-form class="p-0 m-0"
+            [expression]="formLogin.get('login')?.errors?.['email'] && formLogin.get('login')?.touched"
+            message="Formato de email inválido">
+          </app-text-error-input-form>
+        </div>
+
+        <!-- Campo Senha -->
+        <div class="flex flex-col">
+          <div class="flex justify-between items-center px-4">
+            <label class="text-sm font-bold text-slate-700">Palavra-passe</label>
+            <a href="#" class="text-xs font-bold text-primary hover:underline">Esqueceu?</a>
+          </div>
+
+          <input formControlName="senha" type="password" pInputText placeholder="" class="w-full py-4! px-6! mt-2" />
+          <app-text-error-input-form class="p-0 m-0"
+            [expression]="formLogin.get('senha')?.errors?.['required'] && formLogin.get('senha')?.touched"
+            message="Senha é obrigatória">
+          </app-text-error-input-form>
+
+          <app-text-error-input-form class="p-0 m-0"
+            [expression]="formLogin.get('senha')?.errors?.['minlength'] && formLogin.get('senha')?.touched"
+            message="Senha deve ter pelo menos 6 caracteres">
+          </app-text-error-input-form>
+        </div>
+
+        <!-- Botão Entrar -->
+        <p-button label="Entrar na Conta" [type]="'submit'" [loading]="isLoadLogin"
+          [disabled]="!formLogin.valid || isLoadLogin"
+          styleClass="w-full !py-4 !text-lg !font-bold !rounded-full shadow-lg shadow-primary/20"></p-button>
+
+        <div class="text-center pt-4">
+          <span class="text-slate-500 text-sm">Não tem uma conta? </span>
+          <p-button text='true' size='small' [routerLink]="['/criar-conta']"
+            class="text-primary font-bold hover:underline text-sm">
+            Criar conta agora
+          </p-button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+</div>

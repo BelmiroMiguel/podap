@@ -1,0 +1,11 @@
+/* Customização para os botões ficarem perfeitamente ovais como no layout original */
+button[mat-button], button[mat-flat-button] {
+  border-radius: 9999px !important;
+  line-height: 1.5;
+  height: 44px;
+}
+
+/* Ajuste de opacidade para botões não selecionados */
+.text-gray-600 {
+  color: #4b5563;
+}

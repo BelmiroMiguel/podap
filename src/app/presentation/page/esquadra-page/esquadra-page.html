@@ -1,0 +1,273 @@
+<div class="flex flex-col md:flex-row bg-slate-50 pt-20">
+
+  <!-- LADO ESQUERDO: PERFIL (FIXO) -->
+  <div class="hidden  md:flex md:w-5/12 lg:w-[38%] p-8 md:p-16 flex-col justify-between sticky top-0 overflow-hidden">
+
+    <div class="relative z-10">
+      <h1 class="text-4xl lg:text-6xl font-black leading-tight mb-6">
+        Unidade Policial
+      </h1>
+
+      <p class="text-xl opacity-90 max-w-md mb-12 leading-relaxed">
+        Estas informações identificam a unidade policial associada à sua conta.
+        Alguns dados são institucionais e não podem ser alterados.
+      </p>
+      <div class="space-y-6">
+
+        <!-- Cabeçalho da Seção -->
+        <div class="flex items-center gap-3">
+          <div class="h-px w-12 bg-black/40"></div>
+          <span class="text-sm font-bold uppercase tracking-widest opacity-70">
+            Esquadra
+          </span>
+        </div>
+
+        <!-- Perfil Principal -->
+        <div class="flex items-start gap-6">
+
+          <!-- Foto -->
+          <div class="shrink-0">
+            <img src="pna-img.png" alt="Foto de Perfil" class="w-24 h-24 rounded-2xl object-cover" />
+          </div>
+
+          <!-- Dados -->
+          <div class="flex-1 space-y-3 ">
+
+            <!-- Nome -->
+            <h3 class="text-3xl font-black italic leading-tight">
+              Esquadra do Benfica
+            </h3>
+
+            <!-- Cargo / Local -->
+            <p class="text-gray-500  opacity-80">
+              Luanda · Município do Benfica<br>
+              Centro Benfica frente a bombas de combustível
+            </p>
+
+            <!-- Informações rápidas -->
+            <div class="space-y-1 text-sm text-gray-600">
+              <p>
+                <span class="font-bold">E-mail:</span>
+                ---
+              </p>
+              <p>
+                <span class="font-bold">Telefone:</span>
+                +244 923 000 000
+              </p>
+              <p>
+                <span class="font-bold">Emergência ligar para:</span>
+                113
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ação -->
+        <div>
+          <p-button label="Editar Dados da Unidade" icon="pi pi-pencil" size="small"
+            class="text-sm font-bold tracking-wide">
+          </p-button>
+        </div>
+
+        <!-- INFO -->
+        <div class="flex items-start gap-4 p-6 bg-slate-100/50 rounded-3xl">
+          <i class="pi pi-info-circle text-slate-400 mt-1"></i>
+          <p class="text-[11px] text-slate-500 font-bold leading-relaxed uppercase tracking-wider">
+            Alguns dados são definidos pela instituição e não podem ser alterados pelo utilizador.
+          </p>
+        </div>
+
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- LADO DIREITO: DADOS (SCROLL) -->
+  <div class="flex-1 md:ml-[21.666%]lg:ml-[25%] bg-slate-5">
+    <main class="max-w-2x mx-aut px-6 pb-12 lg:py-20 space-y-8">
+
+      <div class="lost-found-container">
+
+        <!-- TÍTULO -->
+        <div class="header mb-4">
+          <h2 class="text-3xl font-black italic leading-tight">
+            Agentes Policiais
+          </h2>
+
+          <form [formGroup]="formFiltro" class="flex gap-4 mt-8">
+
+            <div class="flex flex-col gap-2 min-w-98">
+              <label class="text-sm font-bold text-slate-700 ml-5">
+                Filtro
+              </label>
+              <input type="text" (input)="carregarUsuarios()" formControlName="filtroTexto" pInputText
+                placeholder="Nome, telefone, nip etc..." size="large"
+                class="w-full! py-3.5! placeholder:text-gray-400!" />
+            </div>
+
+
+
+            <div class="flex flex-col gap-2 min-w-55">
+              <label class="text-sm font-bold text-slate-700 ml-5">
+                Ordenar
+              </label>
+
+              <p-select formControlName="ordem" (onChange)="carregarUsuarios()" [options]="[
+                {label: 'Mais Recente', value: 'recente'},
+                {label: 'Mais Antigo', value: 'antigo'},
+                {label: 'Título (A-Z)', value: 'az'},
+                {label: 'Título (Z-A)', value: 'za'},
+              ]" optionLabel="label" optionValue="value" class="rounded-full! w-full! md:w-56 " size="large" />
+            </div>
+
+            <div class="flex-1"></div>
+
+            <div class="self-end">
+              <p-button (onClick)="visibleModalCadastrarPolicial = true; novoPolicial = true;" label="Novo Agente"
+                icon="pi pi-user-plus pr-2!" size="large" class="text-sm font-bold tracking-wide" severity="primary">
+              </p-button>
+            </div>
+          </form>
+
+        </div>
+
+        <div class="bg-white !rounded-[2.5rem] shadow-sm border border-slate-200 overflow-hidden">
+          <p-table [value]="usuariosCarregados" [paginator]="true" [totalRecords]="paginacao.totalItems" [lazy]="true"
+            (onLazyLoad)="carregarUsuarios($event)" [loading]="isLoadPoliciais" [tableStyle]="{ 'min-width': '60rem' }"
+            styleClass="p-datatable-sm" [rows]="paginacao.limit">
+            <ng-template #header>
+              <tr class="!border-none">
+                <th class="!bg-slate-50 !py-6 !pl-8 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                  Agente
+                </th>
+                <th class="!bg-slate-50 text-[10px] font-black text-slate-400 uppercase tracking-widest">Identificação
+                </th>
+                <th class="!bg-slate-50 text-[10px] font-black text-slate-400 uppercase tracking-widest">Telefone</th>
+                <th class="!bg-slate-50 text-[10px] font-black text-slate-400 uppercase tracking-widest">Email</th>
+                <th></th>
+              </tr>
+            </ng-template>
+
+            <ng-template #body let-usuario>
+              <tr class="hover:bg-slate-50/50 transition-colors border-b border-slate-100">
+                <!-- Item com Miniatura -->
+                <td class="!py- !pl-8 max-w-45!">
+                  <div class="flex items-center gap-3">
+                    <div class="relative  shrink-0 w-12 h-12">
+                      <!-- Foto de Perfil -->
+                      <p-image [src]="usuario.fotoUrl" alt="Item"
+                        imageClass=" rounded-2xl! object-cover! border-2! border-gray-100! shadow-sm!"
+                        styleClass="w-full! h-full!" [preview]="true">
+                      </p-image>
+                      <div class="absolute -right-2 -bottom-1 ">
+                        <!-- Botão Editar (PrimeNG pButton) -->
+                        <button pButton icon="pi pi-pencil text-[11px]! pl-1!"
+                          [loading]="isLoadAlterarImagem && usuarioSelecionado?.idUsuario == usuario.idUsuario"
+                          [rounded]="true" severity="info" styleClass=""
+                          class="absolute -bottom-0 -right-0  w-6! h-6! p-0! flex items-center justify-center shadow-lg! border-2 border-white"></button>
+                        <input type="file" accept="image/*" (change)="onImagemSelected($event)"
+                          class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                          title="Alterar foto de perfil" (click)="usuarioSelecionado = usuario" />
+                      </div>
+                    </div>
+                    <div class="flex flex-col">
+                      <span class="font-bold text-slate-800 text-sm">{{ usuario.nome | capitalizar_palavra_pipe}}</span>
+                      <span class="text-[12px] text-gray-400 font-medium  tracking-tighter">
+                        Nip: {{usuario.policial?.nip}}
+                      </span>
+                    </div>
+                  </div>
+                </td>
+
+                <td>
+                  <div class="flex flex-col">
+                    <span class="font-bold text-slate-800 text-sm">
+                      {{ usuario.identificacao | uppercase }}
+                    </span>
+                    <span class="text-[12px]  font-medium  tracking-tighter">
+                      {{usuario.tipoIdentificacao}}
+                    </span>
+                  </div>
+                </td>
+
+                <td>
+                  <span class="text-sm font-medium text-slate-600">{{ usuario.telefone }}</span>
+                </td>
+                <td>
+                  <span class="text-sm font-medium text-slate-600">{{ usuario.email }}</span>
+                </td>
+
+                <td>
+                  <p-button tooltipPosition="bottom" pTooltip="Editar" severity="info" icon="pi pi-user-edit"
+                    (onClick)="novoPolicial = false; usuarioSelecionado = usuario; visibleModalCadastrarPolicial = true;"
+                    [rounded]="true" [text]="true" styleClass="!w-8 !h-8" size="small" />
+                </td>
+              </tr>
+            </ng-template>
+
+            <ng-template pTemplate="emptymessage">
+              <tr>
+                <td colspan="7">
+                  <div
+                    class="flex flex-col items-center justify-center p-10 bg-slate-50 rounded-3xl border-2 border-dashed border-slate-200 m-4">
+                    <i class="pi pi-box text-5xl text-slate-300 mb-4"></i>
+                    <span class="text-slate-500 font-bold uppercase tracking-widest text-xs">
+                      Nenhum agente encontrado
+                    </span>
+                    <p class="text-slate-400 text-sm mt-1">
+                      Cadastre um novo agente ou verifique os filtros.
+                    </p>
+                  </div>
+                </td>
+              </tr>
+            </ng-template>
+
+            <ng-template pTemplate="loadingbody">
+              <tr>
+                <td colspan="7" class="p-10 text-center">
+                  <i class="pi pi-spin pi-spinner text-primary text-3xl mb-2"></i>
+                  <p class="text-slate-400 font-medium">A carregar dados...</p>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+
+      </div>
+
+    </main>
+  </div>
+</div>
+
+
+
+
+
+
+<p-dialog [(visible)]="visibleModalCadastrarPolicial" [modal]="true" (onHide)="usuarioSelecionado = undefined"
+  [breakpoints]="{ '1199px': '45vw', '575px': '95vw' }" [style]="{ width: '38vw' }"
+  styleClass="custom-delivery-dialog rounded-[50px]! ">
+
+  <!-- HEADER -->
+  <ng-template #header>
+    <div class="flex items-center gap-3">
+      <div class="bg-gray-100 p-2 px-3 rounded-full">
+        <i class="pi  {{novoPolicial ? 'pi-user-plus' : 'pi-user-edit'}} text-gray-600 text-xl"></i>
+      </div>
+      <div>
+        <h3 class="font-bold text-xl text-surface-900 m-0">
+          {{novoPolicial ? 'Cadastrar Novo Policial' : 'Eitar Dados do Policial'}}
+        </h3>
+        <p class="text-xs text-surface-500 font-normal">Alguns Dados podem ser retidos pela plataforma </p>
+      </div>
+    </div>
+  </ng-template>
+  
+  @if(visibleModalCadastrarPolicial){
+  <app-cadastro-usuario-form-component [edicao]="!novoPolicial" [mostrarBtnCancelar]="true" [tipoUsuario]="'POLICIAL'"
+    (onCadastro)="carregarUsuarios()" [usuario]="usuarioSelecionado"
+    (onCancel)="visibleModalCadastrarPolicial = false"></app-cadastro-usuario-form-component>
+  }
+</p-dialog>

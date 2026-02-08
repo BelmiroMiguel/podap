@@ -1,0 +1,11 @@
+/* Ajuste para garantir que o botão do material acompanhe o arredondamento do design */
+button[mat-flat-button] {
+  border-radius: 9999px !important;
+  text-transform: none;
+  letter-spacing: 0.5px;
+}
+
+/* Variável de backup caso o tema não injete a cor de borda no avatar */
+.border-primary {
+    border-color: var(--mat-sys-primary) !important;
+}

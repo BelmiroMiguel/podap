@@ -1,0 +1,21 @@
+/* Esconder scrollbar para manter o design limpo */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+@keyframes ultra-pulse {
+  0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(28, 67, 136, 0.555); }
+  50% { transform: scale(1.02); box-shadow: 0 0 10px 5px rgba(21, 61, 124, 0.4); }
+  100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(17, 57, 121, 0.438); }
+}
+
+.animate-hard-pulse {
+  animation: ultra-pulse 1.5s infinite ease-in-out;
+  border-color: #11284d !important; /* Azul vibrante */
+  background-color: #eff6ff !important; /* Fundo azul clarinho */
+}

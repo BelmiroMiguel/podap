@@ -1,0 +1,327 @@
+<div class="flex flex-col lg:flex-row min-h-screen bg-[#F8F9FA]" *ngIf="ocorrencia">
+
+  <!-- LADO ESQUERDO: THE CUSTODIAN CARD (FIXO) -->
+  <!-- Um design mais "dark" ou com contraste para destacar o perfil -->
+  <aside
+    class="hidden lg:flex lg:w-[35%] xl:w-[30%] p-12 flex-col justify-between sticky top-0 h-screen bg-white border-r border-gray-100 z-20">
+
+
+    <div class="relative z-50 mt-20">
+      <h1 class="text-4xl lg:text-6xl font-black leading-tight mb-6">
+        Detalhes do Registo
+      </h1>
+
+      <p class="text-xl opacity-90 max-w-md mb-12 leading-relaxed">
+        Verifique as características do item. Se for o proprietário, inicie agora o processo de solicitação para
+        recuperar o seu pertence.
+      </p>
+      <div class="space-y-6">
+
+        <!-- Cabeçalho da Seção -->
+        <div class="flex items-center gap-3">
+          <div class="h-px w-12 bg-black/40"></div>
+          <span class="text-sm font-bold uppercase tracking-widest opacity-70">
+            Entidade da Posse
+          </span>
+        </div>
+
+        <!-- Perfil Principal -->
+        <div class="flex items-start gap-6">
+
+          <!-- Foto -->
+          <div class="relative  shrink-0 w-24 h-24">
+            <!-- Foto de Perfil -->
+            <p-image [src]="fotoUrl" alt="Item"
+              imageClass=" rounded-2xl! object-cover! border-2! border-gray-100! shadow-sm!"
+              styleClass="w-full! h-full!" [preview]="true">
+            </p-image>
+          </div>
+
+          <!-- Dados -->
+          <div class="flex-1 space-y-3 ">
+
+            <!-- Nome -->
+            <h3 class="text-3xl font-black italic leading-tight">
+              {{ nome | capitalizar_palavra_pipe}}
+            </h3>
+
+            <!-- Cargo / Local -->
+            @if(ocorrencia.usuario?.policial){
+            <p class="text-gray-500  opacity-80">
+              {{ ocorrencia.usuario?.tipoUsuario == 'POLICIAL' ? 'Policial' : 'cidadão'}} ·
+              {{ ocorrencia.usuario?.policial?.esquadra?.nome | capitalizar_palavra_pipe }}<br>
+              {{ ocorrencia.usuario?.policial?.esquadra?.endereco | capitalizar_palavra_pipe }}
+            </p>
+            }
+
+            <!-- Informações rápidas -->
+            <div class="space-y-1 text-sm text-gray-600">
+              <p>
+                <span class="font-bold">E-mail:</span>
+                {{ email | lowercase}}
+              </p>
+              <p>
+                <span class="font-bold">Telefone:</span>
+                {{ telefone | lowercase}}
+              </p>
+              @if(!ocorrencia.usuario?.policial){
+              <p>
+                <span class="font-bold">Identificação:</span>
+                {{ ocorrencia.usuario?.tipoIdentificacao | uppercase}} · {{ ocorrencia.usuario?.identificacao }}
+              </p>
+              }
+            </div>
+          </div>
+        </div>
+
+        <!-- Ação -->
+        <div class="flex justify-between">
+          @if(ocorrencia.statusProcesso != "ENTREGUE"){
+          <div>
+            <p-button label="Solicitar Devolução" icon="pi pi-penci" size="small"
+              class="text-sm font-bold tracking-wide">
+            </p-button>
+          </div>
+          }@else {
+          <p class="text-green-800">O item já foi entrege!</p>
+          }
+
+        </div>
+
+        <div class="space-y-4 hidden pt-10">
+
+          <!-- Cabeçalho da Secção -->
+          <div class="flex items-center gap-3">
+            <div class="h-px w-12 bg-black/40"></div>
+            <span class="text-sm font-bold uppercase tracking-widest opacity-70">
+              Dados Institucionais
+            </span>
+          </div>
+
+
+          <div class="relative z-10">
+            <p-button text="true" severity="secondary" label="Editar Dados Permitidos" iconPos="right"
+              icon="pi pi-pencil" size="small" class="text-sm font-bold tracking-wide">
+            </p-button>
+          </div>
+
+          <!-- Conteúdo -->
+          <div class="space-y-3 text-sm text-gray-600 leading-relaxed">
+
+            <div>
+              <span class="font-bold uppercase text-[11px] text-gray-500">
+                Esquadra de Origem
+              </span>
+              <p class="font-medium text-gray-800">
+                Esquadra Central de Luanda
+              </p>
+            </div>
+
+            <div>
+              <span class="font-bold uppercase text-[11px] text-gray-500">
+                Endereço
+              </span>
+              <p>
+                Avenida 4 de Fevereiro, s/n<br>
+                Ingombota, Luanda
+              </p>
+            </div>
+
+            <div>
+              <span class="font-bold uppercase text-[11px] text-gray-500">
+                Contacto
+              </span>
+              <p>
+                222 333 444
+              </p>
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- INFO -->
+        <div class="flex items-start gap-4 p-6 bg-slate-100/50 rounded-3xl">
+          <i class="pi pi-info-circle text-slate-400 mt-1"></i>
+          <p class="text-[11px] text-slate-500 font-bold leading-relaxed uppercase tracking-wider">
+            Alguns dados são definidos pela instituição e não podem ser alterados pelo utilizador.
+          </p>
+        </div>
+
+
+      </div>
+
+    </div>
+
+  </aside>
+
+  <!-- LADO DIREITO: A MONTRA (SCROLLABLE) -->
+  <main class="flex-1 lg:ml-[2%] mt-20">
+
+    <!-- Seção de Imagens Estilo Luxo -->
+    <section class="p-4 lg:p-10">
+      <div class="grid grid-cols-12 gap-4 h-[70vh]">
+        <!-- Imagem Principal (Destaque Pos 0) -->
+        <div class="col-span-12 lg:col-span-8 h-full relative group overflow-hidden rounded-[3rem] shadow-2xl">
+          <p-image [src]="ocorrencia.item?.fotosItemUrl?.[0]"
+            imageClass="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
+            [preview]="true" styleClass="w-full h-full">
+          </p-image>
+          <!-- Overlay de Info Rápida -->
+          <div class="absolute bottom-10 left-10 text-white z-10">
+            <p-tag [value]="ocorrencia.statusProcesso" severity="info"
+              styleClass="mb-4 !bg-white/20 !backdrop-blur-md !border-none !text-white text-xs font-bold px-6 py-2"></p-tag>
+            <h1 class="text-6xl font-black tracking-tighter drop-shadow-2xl">{{ ocorrencia.item?.titulo }}</h1>
+          </div>
+          <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+        </div>
+
+        <!-- Coluna de Imagens Secundárias -->
+        <div class="hidden lg:flex lg:col-span-4 flex-col gap-4 h-full">
+          @for (img of ocorrencia.item?.fotosItemUrl?.slice(1, 3); track $index) {
+          <div class="h-1/2 rounded-[2.5rem] overflow-hidden shadow-xl border-4 border-white group">
+            <p-image [src]="img"
+              imageClass="w-full h-full object-cover group-hover:rotate-2 transition-transform duration-500"
+              [preview]="true"></p-image>
+          </div>
+          }
+        </div>
+      </div>
+    </section>
+
+    <!-- Content Content Body -->
+    <div class="px-6 lg:px-20 pb-20 space-y-20 -mt-10 relative z-30">
+
+      <!-- Quick Specs Bar -->
+      <div
+        class="bg-white/80 backdrop-blur-xl rounded-[3rem] p-2 shadow-2xl border border-white inline-flex items-center gap-2">
+        <div class="px-8 py-4 bg-black rounded-full text-white text-sm font-black italic">
+          #{{ ocorrencia.idOcorrencia }}
+        </div>
+        <div class="px-6 flex items-center gap-2 border-r border-gray-100">
+          <i class="pi pi-calendar text-primary"></i>
+          <span class="text-sm font-bold text-gray-800">{{ ocorrencia.dataEvento | date:'dd MMM yyyy' }}</span>
+        </div>
+        <div class="px-6 flex items-center gap-2">
+          <i class="pi pi-map-marker text-primary"></i>
+          <span class="text-sm font-bold text-gray-800">{{ ocorrencia.localEvento }}</span>
+        </div>
+      </div>
+
+      <!-- Descrição Editorial -->
+      <section class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+        <div class="lg:col-span-7 space-y-8">
+          <div class="space-y-4">
+            <span class="text-xs font-black uppercase tracking-[0.3em] text-primary">A Ocorrência</span>
+            <h3 class="text-4xl font-black text-gray-900 leading-[1.1]">
+              Detalhes e especificidades do <span class="italic text-gray-400">item encontrado.</span>
+            </h3>
+            <p class="text-xl text-gray-500 leading-relaxed font-light">
+              {{ ocorrencia.item?.descricao }}
+            </p>
+          </div>
+
+          <!-- Tags do Item -->
+          <div class="flex flex-wrap gap-3">
+            <div
+              class="px-6 py-3 bg-white text-gray-500 border border-gray-100 rounded-2xl shadow-sm text-sm font-bold">
+              Categoria: <span class="text-black">{{ ocorrencia.item?.categoria?.descricao }}</span>
+            </div>
+            <div
+              class="px-6 py-3 text-gray-500 bg-white border border-gray-100 rounded-2xl shadow-sm text-sm font-bold">
+              Tipo de ocorrência: <span
+                class="{{ocorrencia.tipoOcorrencia == 'ACHADO' ? 'text-green-800' : 'text-red-800'}}">{{
+                ocorrencia.tipoOcorrencia }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card de Custódia Lateral -->
+        <div class="lg:col-span-5">
+          <div class="bg-white rounded-[3rem] p-10 shadow-xl border border-gray-50 space-y-8 relative overflow-hidden">
+            <div class="absolute top-0 right-0 p-8 opacity-5">
+              <i class="pi pi-box text-8xl"></i>
+            </div>
+
+            <h4 class="text-xl font-black tracking-tighter">Localização de Custódia</h4>
+
+            <div class="space-y-6">
+              <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-2xl bg-blue-50 flex items-center justify-center text-blue-600">
+                  <i class="pi pi-align-left font-bold"></i>
+                </div>
+                <div>
+                  <p class="text-[10px] font-black uppercase text-gray-400">Statos do Processo</p>
+                  <p class="font-bold text-gray-800">{{ ocorrencia.statusProcesso }}</p>
+                </div>
+              </div>
+
+              <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-2xl bg-orange-50 flex items-center justify-center text-orange-600">
+                  <i class="pi pi-user font-bold"></i>
+                </div>
+                <div>
+                  <p class="text-[10px] font-black uppercase text-gray-400">Detentor da Posse</p>
+                  <p class="font-bold text-gray-800">{{ ocorrencia.custodia?.tipoDetentor }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Histórico (Timeline Plena) -->
+      <section class="space-y-12 hidden">
+        <div class="flex items-end justify-between border-b border-gray-100 pb-8">
+          <div class="space-y-2">
+            <span class="text-xs font-black uppercase tracking-[0.3em] text-primary">Logs de Segurança</span>
+            <h3 class="text-4xl font-black tracking-tighter italic text-gray-900">Histórico de <span
+                class="text-gray-300 underline decoration-blue-500">Movimentação</span></h3>
+          </div>
+          <div class="text-right">
+            <p class="text-[10px] font-black uppercase text-gray-400">Última atualização</p>
+            <p class="font-bold text-gray-800">{{ ocorrencia.dataEvento| date:'MMM-yyyy' }}, {{ ocorrencia.dataEvento|
+              date:'HH:mm' }}</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <!-- Card de histórico estático, mas com design Senior -->
+          @for (step of [
+          {t: 'Registo Inicial', d: 'Item inserido no sistema via portal.', i: 'pi-pencil', c: 'text-blue-500', b:
+          'bg-blue-50'},
+          {t: 'Verificação', d: 'Validado pela equipa de triagem.', i: 'pi-check-circle', c: 'text-green-500', b:
+          'bg-green-50'},
+          {t: 'Alocação', d: 'Movido para o setor de custódia A1.', i: 'pi-map', c: 'text-orange-500', b:
+          'bg-orange-50'}
+          ]; track $index) {
+          <div
+            class="bg-white p-8 rounded-[2.5rem] border border-gray-100 hover:shadow-2xl transition-all duration-500 group">
+            <div
+              [class]="'w-14 h-14 rounded-2xl flex items-center justify-center mb-6 transition-transform group-hover:scale-110 ' + step.b">
+              <i [class]="'pi ' + step.i + ' text-xl ' + step.c"></i>
+            </div>
+            <h5 class="text-lg font-black mb-2">{{ step.t }}</h5>
+            <p class="text-sm text-gray-500 leading-relaxed">{{ step.d }}</p>
+          </div>
+          }
+        </div>
+      </section>
+
+      <!-- Footer Action -->
+      <div class="hidden p-12 bg-black rounded-[4rem] text-center space-y-6 shadow-[0_20px_50px_rgba(0,0,0,0.2)]">
+        <h2 class="text-3xl lg:text-5xl font-black text-white tracking-tighter leading-none">
+          Este item pertence-lhe ou tem<br>informações relevantes?
+        </h2>
+        <div class="flex flex-wrap justify-center gap-4">
+          <p-button label="Reivindicar Propriedade"
+            styleClass="p-button-primary p-button-lg px-10 py-5 rounded-full font-black"></p-button>
+          <p-button label="Imprimir Ficha Técnica" icon="pi pi-print"
+            styleClass="p-button-text p-button-white p-button-lg font-bold"></p-button>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>

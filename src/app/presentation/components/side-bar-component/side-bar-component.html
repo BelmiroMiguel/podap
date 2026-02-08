@@ -1,0 +1,59 @@
+<aside class="flex flex-col gap-6 w-full">
+
+  <!-- 1. FILTRAR POR CATEGORIA -->
+  <div class="bg-white rounded-[2.5rem] p-8 shadow-sm border border-slate-50">
+    <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-6">
+      Filtrar por categoria
+    </h4>
+
+    <nav class="flex flex-col gap-2">
+      <!-- Loop pelas categorias principais -->
+      @for (cat of categoriasPrincipais; track cat.idCategoria) {
+      <p-button [label]="cat.descricao" [icon]="categoriaSelecionadaId == cat.idCategoria ? 'pi pi-th-large' : ''"
+        [rounded]="true" [text]="categoriaSelecionadaId !== cat.idCategoria"
+        [severity]="categoriaSelecionadaId === cat.idCategoria ? 'info' : 'secondary'"
+        (onClick)="selecionarCategoria(cat.idCategoria)" styleClass="w-full! justify-start! gap-4! p-4! !border-none">
+      </p-button>
+      }
+
+      <!-- Botão Mais (Abre Modal) -->
+      <p-button label="Mais" icon="pi pi-ellipsis-h" [rounded]="true" [text]="true" severity="secondary"
+        (onClick)="visibleModalCategorias = true" styleClass="w-full! justify-start! gap-4! p-4! !border-none">
+      </p-button>
+    </nav>
+  </div>
+
+  <!-- 2. CARD DICAS PRO -->
+  <div class="bg-primary rounded-[2.5rem] p-8 text-white relative overflow-hidden shadow-lg"
+    style="background-color: var(--color-primary);">
+    <!-- Ícone de fundo decorativo -->
+    <i class="pi pi-verified absolute -right-6 -bottom-6 text-[8rem] opacity-10 rotate-12"></i>
+
+    <div class="flex items-center gap-3 mb-4 relative z-10">
+      <div class="bg-white/20 p-2 rounded-xl backdrop-blur-md flex items-center justify-center">
+        <i class="pi pi-star-fill text-lg"></i>
+      </div>
+      <span class="font-bold text-lg">Dicas Pro</span>
+    </div>
+
+    <p class="text-blue-50 text-sm leading-relaxed relative z-10 font-light">
+      Itens com recompensa costumam ser devolvidos <span class="font-bold text-white">40% mais rápido</span> em nossa
+      plataforma.
+    </p>
+  </div>
+</aside>
+
+
+<p-dialog header="Todas as Categorias" [(visible)]="visibleModalCategorias" [modal]="true" [style]="{ width: '40vw' }">
+  <!-- Aqui listarias todas as categorias vindas do banco de dados -->
+  <div class="grid grid-cols-2 gap-3">
+    @for (cat of categoriasCarregadas; track $index) {
+    <p-button [label]="cat.descricao" [icon]="categoriaSelecionadaId == cat.idCategoria ? 'pi pi-th-large' : ''"
+      [rounded]="true" [text]="categoriaSelecionadaId !== cat.idCategoria"
+      [severity]="categoriaSelecionadaId === cat.idCategoria ? 'info' : 'secondary'"
+      (onClick)="selecionarCategoria(cat.idCategoria); visibleModalCategorias = false;"
+      styleClass="w-full! justify-start! gap-4! p-4! !border-none">
+    </p-button>
+    }
+  </div>
+</p-dialog>

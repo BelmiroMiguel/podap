@@ -1,0 +1,150 @@
+<form [formGroup]="formUsuario" (ngSubmit)="cadastrarUsuario()" class="space-y-6">
+  <!-- Campo Login -->
+  <div class="flex flex-col">
+    <label class="text-sm font-bold text-slate-700 ml-4">Nome Completo</label>
+    <input type="text" pInputText formControlName="nome" class="w-full py-4! px-6! mt-2" />
+    <app-text-error-input-form
+      [expression]="(formUsuario.get('nome')?.errors?.['required'] && formUsuario.get('nome')?.touched) ?? false"
+      message="Nome é obrigatório">
+    </app-text-error-input-form>
+
+    <app-text-error-input-form
+      [expression]="(formUsuario.get('nome')?.errors?.['minlength'] && formUsuario.get('nome')?.touched) ?? false"
+      message="Nome demasiado curto">
+    </app-text-error-input-form>
+
+    <app-text-error-input-form
+      [expression]="(formUsuario.get('nome')?.errors?.['maxlength'] && formUsuario.get('nome')?.touched) ?? false"
+      message="Nome demasiado longo">
+    </app-text-error-input-form>
+  </div>
+
+  @if(tipoUsuario == 'POLICIAL'){
+  <div class="flex flex-col">
+    <label class="text-sm font-bold text-slate-700 ml-4">NIP - Policial</label>
+    <p-inputMask id="nip" formControlName="nip" mask="999999999" slotChar="_" placeholder="_________"
+      class="w-full! mt-2" size="large" [autoClear]="false" styleClass="uppercase! w-full! " />
+    <app-text-error-input-form
+      [expression]="(formUsuario.get('nip')?.errors?.['required'] && formUsuario.get('nip')?.touched) ?? false"
+      message="Número policial é obrigatório">
+    </app-text-error-input-form>
+    <app-text-error-input-form
+      [expression]="(formUsuario.get('nip')?.errors?.['pattern'] && formUsuario.get('nip')?.touched)!"
+      message="Número policial inválido">
+    </app-text-error-input-form>
+  </div>
+  }
+  <div class="flex gap-4">
+    <div class="flex flex-col gap-2">
+      <label class="text-sm font-bold text-slate-700 ml-4">Tipo de Identificação</label>
+      <p-select [options]="[
+        {label: 'Bilhete', value: 'BI'},
+        {label: 'Passaporte', value: 'PASSAPORTE'}
+      ]" optionLabel="label" optionValue="value" formControlName="tipoIdentificacao"
+        class="rounded-full! w-full! md:w-56 " size="large" />
+    </div>
+
+    <div class="flex flex-col ">
+      <label class="text-sm font-bold text-slate-700 ml-4">Identificação</label>
+
+      <p-inputMask id="identificacao" formControlName="identificacao" [mask]="maskIdentificacao" slotChar="_"
+        placeholder="{{ placeholderIdentificacao }}" class="w-full mt-2" size="large" [autoClear]="false"
+        styleClass="uppercase!" />
+      <app-text-error-input-form
+        [expression]="(formUsuario.get('identificacao')?.errors?.['required'] && formUsuario.get('identificacao')?.touched) ?? false"
+        message="Identificação é origatório">
+      </app-text-error-input-form>
+      <app-text-error-input-form
+        [expression]="(formUsuario.errors?.['identificacaoInvalida'] && formUsuario.get('identificacao')?.touched) ?? false"
+        message="Inválido para o tipo selecionado">
+      </app-text-error-input-form>
+    </div>
+  </div>
+
+  <div class="flex flex-col">
+    <label class="text-sm font-bold text-slate-700 ml-4">Telefone</label>
+    <p-inputMask id="telefone" formControlName="telefone" mask="+244 999 999 999" placeholder="+244 9__ ___ ___"
+      slotChar="_" styleClass="w-full mt-2" size="large" [autoClear]="false" />
+    <app-text-error-input-form
+      [expression]="(formUsuario.get('telefone')?.errors?.['required'] && formUsuario.get('telefone')?.touched)!"
+      message="Telefone é obrigatório">
+    </app-text-error-input-form>
+    <app-text-error-input-form
+      [expression]="(formUsuario.get('telefone')?.errors?.['pattern'] && formUsuario.get('telefone')?.touched)!"
+      message="Número de telefone inválido">
+    </app-text-error-input-form>
+  </div>
+
+  <div class="flex flex-col">
+    <label class="text-sm font-bold text-slate-700 ml-4">E-mail</label>
+    <input type="text" pInputText formControlName="email" class="w-full py-4! px-6! mt-2" />
+    <app-text-error-input-form
+      [expression]="(formUsuario.get('email')?.errors?.['required'] && formUsuario.get('email')?.touched)!"
+      message="Email é obrigatório">
+    </app-text-error-input-form>
+    <app-text-error-input-form
+      [expression]="(formUsuario.get('email')?.errors?.['email'] && formUsuario.get('email')?.touched)!"
+      message="Email inválido">
+    </app-text-error-input-form>
+  </div>
+
+  <!-- Campo Senha -->
+
+  @if(!edicao) {
+  <div class="flex gap-4">
+    <div class="flex flex-col">
+      <label class="text-sm font-bold text-slate-700 ml-4">Palavra-Passe</label>
+      <input type="password" pInputText formControlName="senha" class="w-full py-4! px-6! mt-2" />
+      <app-text-error-input-form
+        [expression]="(formUsuario.get('senha')?.errors?.['required'] && formUsuario.get('senha')?.touched)!"
+        message="Senha é obrigatório">
+      </app-text-error-input-form>
+
+      <app-text-error-input-form
+        [expression]="(formUsuario.get('senha')?.errors?.['minlength'] && formUsuario.get('senha')?.touched) ?? false"
+        message="Mínimo 8 caracteres">
+      </app-text-error-input-form>
+
+      <app-text-error-input-form
+        [expression]="(formUsuario.get('senha')?.errors?.['maxlength'] && formUsuario.get('senha')?.touched) ?? false"
+        message="18 caracteres no máximo">
+      </app-text-error-input-form>
+    </div>
+
+    <div class="flex flex-col gap-2">
+      <label class="text-sm font-bold text-slate-700 ml-4">Confirmar</label>
+      <input type="password" pInputText formControlName="senha_confirmation" class="w-full py-4! px-6!" />
+      <app-text-error-input-form
+        [expression]="(formUsuario.get('senha_confirmation')?.errors?.['required'] && formUsuario.get('senha')?.touched)!"
+        message="Confirme a senha é obrigatório">
+      </app-text-error-input-form>
+      <app-text-error-input-form
+        [expression]="(formUsuario.errors?.['senhasDiferentes']  && formUsuario.get('senha_confirmation')?.touched) ?? false"
+        message="As senhas não conscidem">
+      </app-text-error-input-form>
+    </div>
+  </div>
+  }
+
+  <div class="flex items-center justify-end gap-3 w-full pt-4 border-surface-100">
+    @if(mostrarBtnCancelar){
+    <p-button label="Cancelar" size="large" severity="secondary" [outlined]="true" (click)="onCancel.emit();" />
+    }
+    @if(edicao){
+    <p-button type="submit" label="Enviar Atualizações" [loading]="isLoadCadastroUsuario"
+      [disabled]="isLoadCadastroUsuario || !formUsuario.valid" class="flex-1!" severity="info"
+      styleClass="w-full! flex-1! !py-4 !text-lg !font-bold !rounded-full shadow-lg shadow-primary/20">
+    </p-button>
+    }@else if(tipoUsuario == 'POLICIAL'){
+    <p-button type="submit" label="Cadastrar Policial" [loading]="isLoadCadastroUsuario"
+      [disabled]="isLoadCadastroUsuario || !formUsuario.valid" class="flex-1!"
+      styleClass="w-full! flex-1! !py-4 !text-lg !font-bold !rounded-full shadow-lg shadow-primary/20">
+    </p-button>
+    }@else {
+    <p-button type="submit" label="Entrar na Conta" [loading]="isLoadCadastroUsuario"
+      [disabled]="isLoadCadastroUsuario || !formUsuario.valid" class="flex-1!"
+      styleClass="w-full! flex-1! !py-4 !text-lg !font-bold !rounded-full shadow-lg shadow-primary/20">
+    </p-button>
+    }
+  </div>
+</form>

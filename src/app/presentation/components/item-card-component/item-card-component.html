@@ -1,0 +1,43 @@
+<p-card class="group cursor-pointer!" [routerLink]="['/detalhe-ocorrencia']" [state]="{ data: ocorrencia } "
+  styleClass="!rounded-[2.5rem]  overflow-hidden !shadow-sm hover:!shadow-md transition-shadow !border-none !p-0 group!">
+  <ng-template pTemplate="header">
+    <div class="relative h-50 bg-slate-200">
+      <img src="{{ocorrencia.item?.fotosItemUrl?.[0] ?? 'default-img-png'}}" alt="Gato Siamês"
+        class="w-full h-full object-cover group-hover:scale-110 opacity- duration-500 ">
+
+      <!-- Badge de Status: Usando Vermelho para Alerta -->
+      <span
+        class="absolute top-4 left-4 {{ ocorrencia.tipoOcorrencia == 'ACHADO'  ? 'bg-green-600' : 'bg-red-600' }} text-white text-[10px] font-bold px-4 py-2 rounded-full tracking-widest shadow-lg">
+        <i class="pi pi-exclamation-triangle text-sm! p-0!m-0!"></i> {{ocorrencia.tipoOcorrencia}}
+      </span>
+
+      <!-- Badge de Recompensa: USANDO O DOURADO PNA -->
+      <div
+        class="absolute  hidden  bottom-4 right-4 bg-[#d4af37] text-slate-900 text-[11px] font-black px-4 py-1.5 rounded-full shadow-md border border-white/20">
+        {{ocorrencia.idOcorrencia}}
+      </div>
+    </div>
+  </ng-template>
+
+  <div class="flex flex-col">
+    <!-- Categoria usando o AZUL MARINHO do seu preset -->
+    <span class="text-[10px] font-bold text-primary uppercase tracking-[0.2em]" style="color: var(--p-primary-500);">
+      {{ocorrencia.item?.categoria?.descricao}}
+    </span>
+
+    <h3 class="text-xl font-bold text-slate-800 mt-2">{{ocorrencia.item?.titulo}}</h3>
+
+    <p class="text-slate-500 text-sm mt-3 leading-relaxed line-clamp-2">
+      {{ocorrencia.item?.descricao}}
+    </p>
+
+    <!-- Rodapé: Divisor e Informações -->
+    <div class="flex items-center justify-between mt-2 pt-5 border-t border-slate-100">
+      <div class="flex items-center gap-1.5 text-slate-400">
+        <i class="pi pi-map-marker text-sm"></i>
+        <span class="text-[11px] font-bold uppercase">{{ocorrencia.localEvento}}</span>
+      </div>
+      <span class="text-[11px] font-medium text-slate-400 italic">{{ocorrencia.dataEvento | format_date_pipe}}</span>
+    </div>
+  </div>
+</p-card>

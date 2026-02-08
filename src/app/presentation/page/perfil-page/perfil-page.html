@@ -1,0 +1,224 @@
+<div class="flex flex-col md:flex-row pt-20">
+
+  <!-- LADO ESQUERDO: PERFIL (FIXO) -->
+  <div class="hidden  md:flex md:w-5/12 lg:w-[38%] p-8 md:p-16 flex-col justify-between sticky top-30 overflow-hidden"
+    style="z-index: 10 !important;">
+
+    <div class="relative z-50">
+      <h1 class="text-4xl lg:text-6xl font-black leading-tight mb-6">
+        Perfil
+      </h1>
+
+      <p class="text-xl opacity-90 max-w-md mb-12 leading-relaxed">
+        Estas são as informações institucionais associadas à sua conta.
+        Alguns dados são apenas informativos e não podem ser alterados.
+      </p>
+      <div class="space-y-6">
+
+        <!-- Cabeçalho da Seção -->
+        <div class="flex items-center gap-3">
+          <div class="h-px w-12 bg-black/40"></div>
+          <span class="text-sm font-bold uppercase tracking-widest opacity-70">
+            Identificação
+          </span>
+        </div>
+
+        <!-- Perfil Principal -->
+        <div class="flex items-start gap-6">
+
+          <!-- Foto -->
+          <div class="relative  shrink-0 w-24 h-24">
+            <!-- Foto de Perfil -->
+            <p-image [src]="usuarioLogado.fotoUrl" alt="Item"
+              imageClass=" rounded-2xl! object-cover! border-2! border-gray-100! shadow-sm!"
+              styleClass="w-full! h-full!" [preview]="true">
+            </p-image>
+            <div class="absolute right-0 bottom-0">
+              <!-- Botão Editar (PrimeNG pButton) -->
+              <button pButton icon="pi pi-pencil" [loading]="isLoadAlterarImagem" [rounded]="true" severity="info"
+                class="absolute -bottom-2 -right-2 w-5! h-8! p-0! flex items-center justify-center shadow-lg! border-2 border-white"
+                style="min-width: 2rem; height: 2rem;"></button>
+              <input type="file" accept="image/*" (change)="onImagemSelected($event)"
+                class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" title="Alterar foto de perfil" />
+            </div>
+          </div>
+
+
+
+          <!-- Dados -->
+          <div class="flex-1 space-y-3 ">
+
+            <!-- Nome -->
+            <h3 class="text-3xl font-black italic leading-tight">
+              {{ usuarioLogado.nome | capitalizar_palavra_pipe}}
+            </h3>
+
+            <!-- Cargo / Local -->
+            @if(usuarioLogado.policial){
+            <p class="text-gray-500  opacity-80">
+              {{ usuarioLogado.tipoUsuario == 'POLICIAL' ? 'Policial' : 'cidadão'}} ·
+              {{ usuarioLogado.policial.esquadra?.nome | capitalizar_palavra_pipe }}<br>
+              {{ usuarioLogado.policial.esquadra?.endereco | capitalizar_palavra_pipe }}
+            </p>
+            }
+
+            <!-- Informações rápidas -->
+            <div class="space-y-1 text-sm text-gray-600">
+              <p>
+                <span class="font-bold">E-mail:</span>
+                {{ usuarioLogado.email | lowercase}}
+              </p>
+              <p>
+                <span class="font-bold">Telefone:</span>
+                {{ usuarioLogado.telefone | lowercase}}
+              </p>
+              <p>
+                <span class="font-bold">Identificação:</span>
+                {{ usuarioLogado.tipoIdentificacao | uppercase}} · {{ usuarioLogado.identificacao }}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ação -->
+        <div class="flex justify-between">
+          <div>
+            <p-button [hasPermission]="['gerir_policiais']" [policial]="usuarioLogado.policial" label="Editar Perfil"
+              (onClick)="visibleModalEditarPerfil = true" icon="pi pi-pencil" size="small"
+              class="text-sm font-bold tracking-wide">
+            </p-button>
+          </div>
+
+          <p-button (onClick)="popoverTerminarSessao.toggle($event)" styleClass="!text-primary !rounded-full"
+            size="small" severity="danger" text="true">
+            <ng-template pTemplate="content">
+              <div class="flex items-center gap-2 m-0 p-0">
+                <i class="pi pi-sign-out text-lg"></i>
+                <span class="hidden md:inline font-bold">Terminar Secção</span>
+              </div>
+            </ng-template>
+          </p-button>
+
+        </div>
+
+        <div class="space-y-4 hidden pt-10">
+
+          <!-- Cabeçalho da Secção -->
+          <div class="flex items-center gap-3">
+            <div class="h-px w-12 bg-black/40"></div>
+            <span class="text-sm font-bold uppercase tracking-widest opacity-70">
+              Dados Institucionais
+            </span>
+          </div>
+
+
+          <div class="relative z-10">
+            <p-button text="true" severity="secondary" label="Editar Dados Permitidos" iconPos="right"
+              icon="pi pi-pencil" size="small" class="text-sm font-bold tracking-wide">
+            </p-button>
+          </div>
+
+          <!-- Conteúdo -->
+          <div class="space-y-3 text-sm text-gray-600 leading-relaxed">
+
+            <div>
+              <span class="font-bold uppercase text-[11px] text-gray-500">
+                Esquadra de Origem
+              </span>
+              <p class="font-medium text-gray-800">
+                Esquadra Central de Luanda
+              </p>
+            </div>
+
+            <div>
+              <span class="font-bold uppercase text-[11px] text-gray-500">
+                Endereço
+              </span>
+              <p>
+                Avenida 4 de Fevereiro, s/n<br>
+                Ingombota, Luanda
+              </p>
+            </div>
+
+            <div>
+              <span class="font-bold uppercase text-[11px] text-gray-500">
+                Contacto
+              </span>
+              <p>
+                222 333 444
+              </p>
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- INFO -->
+        <div class="flex items-start gap-4 p-6 bg-slate-100/50 rounded-3xl">
+          <i class="pi pi-info-circle text-slate-400 mt-1"></i>
+          <p class="text-[11px] text-slate-500 font-bold leading-relaxed uppercase tracking-wider">
+            Alguns dados são definidos pela instituição e não podem ser alterados pelo utilizador.
+          </p>
+        </div>
+
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- LADO DIREITO: DADOS (SCROLL) -->
+  <div class="flex-1 md:ml-[21.666%]lg:ml-[25%] bg-slate-5">
+    <main class="max-w-2x mx-aut px-6 pb-12 lg:py-20 space-y-8">
+      <app-lista-ocorrencias-component titulo="Seus Anúncios, Perdidos & Achados"
+        [isPolicial]="false"></app-lista-ocorrencias-component>
+    </main>
+  </div>
+</div>
+
+
+<p-popover #popoverTerminarSessao [dismissable]="true">
+  <div class="px-4 flex flex-col gap-3 min-w-60">
+
+    <!-- Texto com ícone -->
+    <div class="flex items-center gap-2 text-red-600">
+      <i class="pi pi-exclamation-triangle text-lg"></i>
+      <span class="font-semibold">
+        Terá de inicar sessão novamente?
+      </span>
+    </div>
+
+    <!-- Ações -->
+    <div class="flex justify-end gap-2 mt-2">
+      <p-button label="Cancelar" size="small" severity="secondary" [text]="true"
+        (onClick)="popoverTerminarSessao.hide()" />
+
+      <p-button label="Terminar" size="small" severity="danger" icon="pi pi-sign-out" btnTerminarSeccao />
+    </div>
+
+  </div>
+</p-popover>
+
+
+
+<p-dialog [(visible)]="visibleModalEditarPerfil" [modal]="true" [breakpoints]="{ '1199px': '45vw', '575px': '95vw' }"
+  [style]="{ width: '38vw' }" styleClass="custom-delivery-dialog rounded-[50px]! ">
+
+  <!-- HEADER -->
+  <ng-template #header>
+    <div class="flex items-center gap-3">
+      <div class="bg-gray-100 p-2 px-3 rounded-full">
+        <i class="pi pi-user-edit text-gray-600 text-xl"></i>
+      </div>
+      <div>
+        <h3 class="font-bold text-xl text-surface-900 m-0">Editar Dados do Perfil</h3>
+        <p class="text-xs text-surface-500 font-normal">Alguns Dados podem ser retidos pela plataforma </p>
+      </div>
+    </div>
+  </ng-template>
+  <app-cadastro-usuario-form-component [edicao]="true" [mostrarBtnCancelar]="true"
+    [tipoUsuario]="usuarioLogado.tipoUsuario" (onCadastro)="usuarioLogado = $event" [usuario]="{...usuarioLogado}"
+    [updateState]="true" (onCancel)="visibleModalEditarPerfil = false"></app-cadastro-usuario-form-component>
+</p-dialog>

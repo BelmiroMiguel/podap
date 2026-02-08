@@ -1,0 +1,151 @@
+<form [formGroup]="formEntrega">
+
+  <div class="flex flex-col gap-6 py-2">
+
+    <!-- SEÇÃO DO ITEM (Visualização) -->
+    <div class="bg-surface-50 p-4 rounded-2xl border border-surface-100">
+      <div class="flex gap-4 items-start">
+        <!-- Galeria de Imagens Inteligente -->
+        <div class="flex flex-col gap-2 shrink-0">
+          <!-- Imagem Principal com Preview -->
+          <p-image [src]="ocorrencia.item?.fotosItemUrl?.[0]" alt="Item" width="120"
+            imageClass="rounded-xl shadow-sm object-cover h-28 w-28" [preview]="true">
+          </p-image>
+
+          <!-- Miniaturas (se houver mais de uma) -->
+          <div class="flex gap-1" v-if="imagens.length > 1">
+            @for (img of ocorrencia.item?.fotosItemUrl?.slice(1, 4); track $index) {
+            <p-image [src]="img" width="38"
+              imageClass="rounded-md object-cover h-10 w-10 opacity-70 hover:opacity-100 transition-all"
+              [preview]="true">
+            </p-image>
+            }
+          </div>
+        </div>
+
+        <!-- Detalhes do Objeto -->
+        <div class="flex flex-col gap-1">
+          <span class="text-xs font-bold uppercase tracking-wider text-primary">Objeto Perdido</span>
+          <h4 class="text-lg font-bold text-surface-800 leading-tight"> {{ocorrencia.item?.descricao |
+            capitalizar_palavra_pipe}}</h4>
+          <div class="flex items-center gap-2 text-sm text-surface-600">
+            <i class="pi pi-map-marker text-xs"></i>
+            <span>{{ ocorrencia.localEvento}}</span>
+          </div>
+          <p class="text-xs text-surface-500 mt-2 line-clamp-2">
+            {{ocorrencia.item?.descricao }}
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- FORMULÁRIO DE ENTREGA -->
+    <div class="flex flex-col gap-4">
+      <div class="flex flex-col gap-2">
+        <label class="text-sm font-bold text-surface-700">Telefone *</label>
+        <div class="p-inputgroup">
+          <input pInputText formControlName="telefoneLegitmoDono" placeholder="Telefone do legítmo dono a receber"
+            (change)="carregarLegitmoDono($event)" pSize="large" class="w-full" />
+          <app-text-error-input-form
+            [expression]="formEntrega.get('telefoneLegitmoDono')?.errors?.['required'] && formEntrega.get('telefoneLegitmoDono')?.touched"
+            message="Campo obrigatório">
+          </app-text-error-input-form>
+          <app-text-error-input-form
+            [expression]="(formEntrega.get('telefoneLegitmoDono')?.errors?.['pattern'] && formEntrega.get('telefoneLegitmoDono')?.touched)!"
+            message="Telefone deve estar no formato 9XX XXX XXX">
+          </app-text-error-input-form>
+        </div>
+      </div>
+
+      <!-- Card de Utilizador Legítimo -->
+      @if(usuarioLegitmoDono){
+      <div class="mt-2 p-3 border rounded-[50px] bg-gray-50 flex items-center gap-3 animate-fade-in shadow-sm">
+        <!-- Imagem do Usuário -->
+        <div class="relative">
+          <img [src]="usuarioLegitmoDono.fotoUrl || 'default-img.png'" alt="Foto do dono"
+            class="w-12 h-12 rounded-full object-cover border-2 border-white shadow-sm">
+          <span class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></span>
+        </div>
+
+        <!-- Informações -->
+        <div class="flex flex-col">
+          <span class="text-xs font-medium text-gray-400 hidden uppercase tracking-wider">Usuário Encontrado</span>
+          <span class="text-md font-bold text-gray-800">{{ usuarioLegitmoDono.nome }}</span>
+          <span class="text-xs text-gray-900 mt-2">será enviado um link de confirmação para</span>
+          <span class="text-sm text-gray-950">{{ usuarioLegitmoDono.email }}</span>
+        </div>
+
+        <!-- Ícone de Verificado -->
+        <div class="ml-auto">
+          <svg class="w-5 h-5 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd"
+              d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+              clip-rule="evenodd" />
+          </svg>
+        </div>
+      </div>
+      }
+
+      @if(!usuarioLegitmoDono && isLoadUsuarioLegitmoUmaVez){
+      <!-- Card de Utilizador Não Encontrado -->
+      <div class="p-3 border border-red-100 bg-red-50 rounded-[50px] flex items-center gap-3 animate-pulse shadow-sm">
+
+        <!-- Ícone de Alerta -->
+        <div class="flex-shrink-0 bg-red-100 p-2 rounded-full">
+          <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z">
+            </path>
+          </svg>
+        </div>
+
+        <!-- Texto de Erro -->
+        <div class="flex flex-col">
+          <span class="text-xs font-bold text-red-700 uppercase">Usuário não localizado</span>
+          <span class="text-sm text-red-600">Certifique-se de que o número está correto ou que o usuário já possui
+            cadastro na plataforma.</span>
+        </div>
+      </div>
+      }
+
+      <div class="flex flex-col gap-2">
+        <label class="text-sm font-bold text-surface-700">
+          Comprovativo de Entrega <span class="text-xs font-normal text-surface-400">(Opcional)</span>
+        </label>
+
+        <!-- AREA DE PREVIEW (Só aparece se houver imagem) -->
+        @if (comprovantePreview) {
+        <div class="relative w-full h-48 rounded-2xl overflow-hidden border-2 border-primary/20 bg-surface-50 group">
+          <img [src]="comprovantePreview" class="w-full h-full object-cover" />
+
+          <!-- Overlay para Remover -->
+          <div
+            class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+            <p-button icon="pi pi-trash" severity="danger" [rounded]="true" label="Trocar Foto"
+              (click)="removerComprovante()" />
+          </div>
+        </div>
+        } @else {
+        <!-- BOTÃO DE UPLOAD (Só aparece se NÃO houver imagem) -->
+        <p-fileUpload mode="basic" chooseLabel="Anexa foto do item com o legítimo" chooseIcon="pi pi-camera"
+          styleClass="p-button-outlined p-button-secondary w-full !rounded-full" accept="image/*"
+          [maxFileSize]="3000000" (onSelect)="onSelecionarComprovante($event)" />
+        }
+
+        <!-- AVISO -->
+        <div class="flex items-start gap-2 mt-1 px-1">
+          <i class="pi pi-info-circle text-amber-500 text-[10px] m-1"></i>
+          <p class="text-[13px] text-surface-500 leading-tight">
+            Evite fotos de documentos. Prefira uma foto do objeto ou do momento da entrega.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="flex items-center justify-end gap-3 w-full pt-4 border-surface-100">
+    <p-button label="Cancelar" text="true" size="large" severity="secondary" [outlined]="true" (click)="onCancel.emit();" />
+    <p-button (onClick)="confirmarEntrega()" label="Enviar Solicitação de Entrega" icon="pi pi-send"
+      [disabled]="isLoadConfirmarEntrega || !formEntrega.valid" [loading]="isLoadConfirmarEntrega" size="large" />
+  </div>
+</form>

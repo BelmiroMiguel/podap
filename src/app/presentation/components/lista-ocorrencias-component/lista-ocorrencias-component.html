@@ -1,0 +1,366 @@
+<div class="lost-found-container" style="z-index: 0 !important;">
+  <!-- TÍTULO -->
+  <div class="header mb-4 ">
+
+    <div class="header mb-4">
+      <div class="flex gap-5  min-h-13">
+        <h2 class="text-3xl font-black italic leading-tight self-center">
+          {{titulo}}
+        </h2>
+
+        @if(isPolicial){
+        <div class="w-115! flex bg-gray-50 p-1 rounded-full border border-gray-200 shadow-sm">
+          <!-- Botão: Nossos Armazéns (Ativo quando apenasEsquadra é false) -->
+          <p-button label="Nossos Armazéns" icon="pi pi-warehouse" class="flex-1! w-full!"
+            (onClick)="apenasEsquadra = 1; carregarOcorrencias();"
+            [severity]="apenasEsquadra == 1 ? 'primary' : 'secondary'" [text]="apenasEsquadra != 1"
+            styleClass="!px-8 w-full! h-full! !rounded-full !border-none transition-all">
+          </p-button>
+
+          <!-- Botão: Global (Ativo quando apenasEsquadra é true) -->
+          <p-button label="Global" icon="pi pi-tags" class="flex-1! w-full!"
+            (onClick)="apenasEsquadra = 0; carregarOcorrencias();"
+            [severity]="apenasEsquadra == 0 ? 'primary' : 'secondary'" [text]="apenasEsquadra != 0"
+            styleClass="!px-8 w-full! h-full! !rounded-full !border-none transition-all">
+          </p-button>
+        </div>
+        }
+      </div>
+
+      <!-- CARDS -->
+      <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-8 mt-2 z-0">
+
+        <!-- CARD 1 -->
+        <div class="bg-blue-100/20 backdrop-blur-md rounded-2xl p-4 flex items-center gap-4">
+          <div class="bg-blue-400/20 p-3 rounded-xl">
+            <i class="pi pi-box text-primary text-xl"></i>
+          </div>
+          <div>
+            <p class="text-sm opacity-70">Total</p>
+            <p class="text-2xl font-black">{{totalOcorrenciaCard}}</p>
+          </div>
+        </div>
+
+        <!-- CARD 2 -->
+        <div class="bg-blue-100/20 backdrop-blur-md rounded-2xl p-4 flex  z-0 items-center gap-4">
+          <div class="bg-orange-400/20 p-3 rounded-xl">
+            <i class="pi pi-exclamation-circle text-orange-400 text-xl"></i>
+          </div>
+          <div>
+            <p class="text-sm opacity-70">Perdidos</p>
+            <p class="text-2xl font-black">{{totalOcorrenciaPerdidoCard}}</p>
+          </div>
+        </div>
+
+        <!-- CARD 3 -->
+        <div class="bg-blue-100/20 backdrop-blur-md rounded-2xl p-4 flex items-center gap-4">
+          <div class="bg-green-500/20 p-3 rounded-xl">
+            <i class="pi pi-check-circle text-green-500 text-xl"></i>
+          </div>
+          <div>
+            <p class="text-sm opacity-70">Encontrados</p>
+            <p class="text-2xl font-black">{{totalOcorrenciaAchadoCard}}</p>
+          </div>
+        </div>
+
+        <!-- CARD 4 -->
+        <div class="bg-amber-100/20 backdrop-blur-md rounded-2xl p-4 flex items-center gap-4">
+          <div class="bg-amber-500/20 p-3 rounded-xl">
+            <i class="pi pi-check-circle text-green-500 text-xl"></i>
+          </div>
+          <div>
+            <p class="text-sm opacity-70">Devolvidos aos Legítmos</p>
+            <p class="text-2xl font-black">{{totalOcorrenciaDevolvidoLegitmoCard}}</p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- FILTROS -->
+      <form [formGroup]="formFiltro" class="flex gap-4 mt-8">
+        <div class="flex flex-col gap-2 min-w-78">
+          <label class="text-sm font-bold text-slate-700 ml-5">
+            Filtro
+          </label>
+          <input formControlName="filtroTexto" type="text" pInputText (input)="carregarOcorrencias()"
+            placeholder="Titulo, nome, descrição etc..." size="large"
+            class="w-full! py-3.5! placeholder:text-gray-400!" />
+        </div>
+
+        <div class="flex flex-col gap-2 min-w-55">
+          <label class="text-sm font-bold text-slate-700 ml-5">
+            Tipo de Ocorrência
+          </label>
+
+          <p-multiselect formControlName="tipoOcorrenciaIncluds[]" (onChange)="carregarOcorrencias()" [options]="[
+                {label: 'Perdidos', value: 'PERDIDO'},
+                {label: 'Achados', value: 'ACHADO'},
+              ]" placeholder="Todas ocorrências" optionLabel="label" optionValue="value"
+            styleClass=" placeholder:text-gray-400!" class="rounded-full!  placeholder:text-gray-400! w-full! md:w-56 "
+            size="large" />
+        </div>
+
+        <div class="flex flex-col gap-2 min-w-45!">
+          <label class="text-sm font-bold text-slate-700 ml-5">
+            Categoria
+          </label>
+
+          <p-multiselect formControlName="idCategoriaIncluds[]" (onChange)="carregarOcorrencias()"
+            [loading]="isLoadCategorias" [options]="categoriasCarregadas" optionLabel="descricao" styleClass="max-w-65!"
+            optionValue="idCategoria" placeholder="Todas categorias" class="rounded-full! w-full! md:w-56 max-w-30!"
+            size="large">
+          </p-multiselect>
+        </div>
+
+
+        <div class="flex flex-col gap-2 min-w-55">
+          <label class="text-sm font-bold text-slate-700 ml-5">
+            Ordenar
+          </label>
+
+          <p-select formControlName="ordem" (onChange)="carregarOcorrencias()" [options]="[
+                {label: 'Mais Recente', value: 'recente'},
+                {label: 'Mais Antigo', value: 'antigo'},
+                {label: 'Título (A-Z)', value: 'az'},
+                {label: 'Título (Z-A)', value: 'za'},
+              ]" optionLabel="label" optionValue="value" class="rounded-full! w-full! md:w-56 " size="large" />
+        </div>
+
+        <div class="self-end hidden">
+          <p-button [routerLink]="['/anunciar']" label="Novo Anúncio" icon="pi pi-megaphone pr-2!" size="large"
+            class="text-sm font-bold tracking-wide" severity="warn">
+          </p-button>
+        </div>
+
+      </form>
+
+    </div>
+
+    <div class="bg-white !rounded-[2.5rem] shadow-sm border border-slate-200 overflow-hidden">
+      <p-table [value]="ocorrenciasCarregadas" [loading]="isLoadOcorrencia" [tableStyle]="{ 'min-width': '60rem' }"
+        styleClass="p-datatable-sm">
+
+        <ng-template #header>
+          <tr class="!border-none">
+            <th class="!bg-slate-50 !py-6 !pl-8 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+              Item
+            </th>
+            <th class="!bg-slate-50 text-[10px] font-black text-slate-400 uppercase tracking-widest">Tipo</th>
+            <th class="!bg-slate-50 text-[10px] font-black text-slate-400 uppercase tracking-widest">Categoria</th>
+            <th class="!bg-slate-50 text-[10px] font-black text-slate-400 uppercase tracking-widest">Localização
+            </th>
+            <th class="!bg-slate-50 text-[10px] font-black text-slate-400 uppercase tracking-widest">Data</th>
+            <th class="!bg-slate-50 text-[10px] font-black text-slate-400 uppercase tracking-widest">Status</th>
+            <th class="!bg-slate-50 !pr-8 text-center text-[10px] font-black text-slate-400 uppercase tracking-widest">
+              Ações
+            </th>
+          </tr>
+        </ng-template>
+
+        <ng-template #body let-ocorrencia>
+          <tr class="hover:bg-slate-50/50 transition-colors border-b border-slate-100">
+            <!-- Item com Miniatura -->
+            <td class="!py- !pl-8 max-w-45!">
+              <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-2xl overflow-hidden border border-slate-200 shrink-0">
+                  <img [src]="ocorrencia.item?.fotosItemUrl[0]" class="w-full h-full object-cover">
+                </div>
+                <div class="flex flex-col">
+                  <span class="font-bold text-slate-800 text-sm">{{ ocorrencia.titulo }}</span>
+                  <span class="text-[12px]  font-medium  tracking-tighter">
+                    {{ocorrencia.item?.titulo | capitalizar_palavra_pipe}}
+                  </span>
+                </div>
+              </div>
+            </td>
+
+            <!-- Tipo (Tag Colorida) -->
+            <td>
+              <p-message [severity]="ocorrencia.tipoOcorrencia == 'PERDIDO' ? 'error': 'success'" variant="simple"
+                size="small" text="{{ ocorrencia.tipoOcorrencia }}"></p-message>
+            </td>
+
+            <!-- Categoria -->
+            <td>
+              <span class="text-sm font-medium text-slate-600">{{ ocorrencia.item.categoria?.descricao }}</span>
+            </td>
+
+            <!-- Localização -->
+            <td class="max-w-45!">
+              <div class="flex items-center gap-1 text-slate-500">
+                <i class="pi pi-map-marker text-[10px]"></i>
+                <span class="text-xs font-bold">{{ ocorrencia.localEvento }}</span>
+              </div>
+            </td>
+
+            <!-- Data -->
+            <td>
+              <span class="text-xs font-bold text-slate-600">{{ ocorrencia.dataEvento | date: 'dd/MM/yyyy' }}</span>
+            </td>
+
+            <!-- Status -->
+            <td>
+              <div class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full" [ngClass]="{
+                          'bg-green-500': ocorrencia.status === 'Recuperado',
+                          'bg-amber-500': ocorrencia.status === 'Em Aberto',
+                          'bg-slate-300': ocorrencia.status === 'Suspenso'
+                        }">
+                </span>
+                <span class="text-xs font-bold text-slate-700">{{ ocorrencia.statusProcesso}}</span>
+              </div>
+            </td>
+
+            <!-- Ações -->
+            <td class="pr-8!">
+              <div class="flex justify-end gap-2">
+                @if(ocorrencia.tipoOcorrencia == 'PERDIDO' ){
+                <p-button [disabled]="ocorrencia.statusProcesso != 'PROCURANDO'" [text]="true"
+                  pTooltip="{{ ocorrencia.statusProcesso == 'ENTREGUE' ? 'Já Recuperado' : ocorrencia.statusProcesso != 'PROCURANDO' ? 'Há um processo no momento' : 'Marcar Recuperado'  }}"
+                  (onClick)="ocorrenciaSelecionada = ocorrencia; popoverMarcarItemRecuperado.toggle($event)"
+                  tooltipPosition="bottom" icon="pi pi-check-circle" [rounded]="true" severity="info"
+                  styleClass="!w-8 !h-8" size="small" />
+                }@else{
+                <p-button [disabled]="ocorrencia.statusProcesso != 'PROCURANDO'" [text]="true"
+                  pTooltip="{{ ocorrencia.statusProcesso == 'ENTREGUE' ? 'Já Entregue' : ocorrencia.statusProcesso != 'PROCURANDO' ? 'Há um processo no momento' : 'Solicitar Entrega'  }}"
+                  (onClick)="ocorrenciaSelecionada = ocorrencia; visibleModalEntregarItemLegitmoDono = true;"
+                  tooltipPosition="bottom" icon="pi pi-send" [rounded]="true" severity="success" styleClass="!w-8 !h-8"
+                  size="small" />
+                }
+
+                <p-button tooltipPosition="bottom" [routerLink]="['/detalhe-ocorrencia']"
+                  [state]="{ data: ocorrencia } " pTooltip="Ver Detalhes" icon="pi pi-eye" [rounded]="true"
+                  [text]="true" styleClass="!w-8 !h-8 !text-primary" size="small" />
+
+                <p-button (onClick)="ocorrenciaSelecionada = ocorrencia; popoverSupenderItem.toggle($event)"
+                  [disabled]="ocorrencia.statusProcesso != 'PROCURANDO'" tooltipPosition="bottom"
+                  pTooltip="{{ ocorrencia.statusProcesso == 'ENTREGUE' ? 'Já Entregue' : ocorrencia.statusProcesso != 'PROCURANDO' ? 'Há um processo no momento' : 'Suspender'  }}"
+                  icon="pi pi-ban" [rounded]="true" [text]="true" severity="danger" styleClass="!w-8 !h-8"
+                  size="small" />
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+
+
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="7">
+              <div
+                class="flex flex-col items-center justify-center p-10 bg-slate-50 rounded-3xl border-2 border-dashed border-slate-200 m-4">
+                <i class="pi pi-box text-5xl text-slate-300 mb-4"></i>
+                <span class="text-slate-500 font-bold uppercase tracking-widest text-xs">
+                  Nenhuma ocorrência encontrada
+                </span>
+                <p class="text-slate-400 text-sm mt-1">
+                  Cadastre uma nova ocorrência ou verifique os filtros.
+                </p>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="loadingbody">
+          <tr>
+            <td colspan="7" class="p-10 text-center">
+              <i class="pi pi-spin pi-spinner text-primary text-3xl mb-2"></i>
+              <p class="text-slate-400 font-medium">A carregar dados...</p>
+            </td>
+          </tr>
+        </ng-template>
+
+
+      </p-table>
+
+      <div class="!py-4 !px-8 bg-slate-50/50 border-t border-slate-100">
+        <p-paginator (onPageChange)="onPageChange($event)" [first]="(paginacao.page - 1) * paginacao.limit"
+          [rows]="paginacao.limit" [totalRecords]="paginacao.totalItems" styleClass="!bg-transparent !border-none !p-0">
+        </p-paginator>
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+
+  <p-popover #popoverSupenderItem [dismissable]="true">
+    <div class="px- flex flex-col gap-3 min-w-65">
+
+      <!-- Texto com ícone -->
+      <div class="flex items-center gap-2 text-red-600">
+        <i class="pi pi-check-circle text-lg"></i>
+        <span class="font-semibold">
+          O Item será suspenço de forma permanente?
+        </span>
+      </div>
+
+      <span class="px-4 text-xs text-gray-900">
+        Esta opção não tem mais volta!
+      </span>
+
+      <!-- Ações -->
+      <div class="flex justify-end gap-2 mt-2">
+        <p-button label="Cancelar" size="small" severity="secondary" [text]="true"
+          (onClick)="popoverSupenderItem.hide()" />
+        <p-button [disabled]="isLoadSupenderOcorrencia" [loading]="isLoadSupenderOcorrencia" label="Supender"
+          size="small" severity="danger" icon="pi pi-ban" (onClick)="suspenderOcorrencia()" />
+      </div>
+
+    </div>
+  </p-popover>
+
+
+  <p-popover #popoverMarcarItemRecuperado [dismissable]="true">
+    <div class="px- flex flex-col gap-3 min-w-65">
+
+      <!-- Texto com ícone -->
+      <div class="flex items-center gap-2 text-green-600">
+        <i class="pi pi-check-circle text-lg"></i>
+        <span class="font-semibold">
+          O seu item foi recuperado?
+        </span>
+      </div>
+
+
+      <span class="px-4 text-xs text-gray-900">
+        Esta opção não tem mais volta!
+      </span>
+
+      <!-- Ações -->
+      <div class="flex justify-end gap-2 mt-2">
+        <p-button label="Cancelar" size="small" severity="secondary" [text]="true"
+          (onClick)="popoverMarcarItemRecuperado.hide()" />
+
+        <p-button [disabled]="isLoadMarcarItemRecuperado" [loading]="isLoadMarcarItemRecuperado"
+          label="Sim já Recuperado" (onClick)="marcarItemRecuperado()" size="small" severity="success"
+          icon="pi pi-check-circle" />
+      </div>
+
+    </div>
+  </p-popover>
+
+
+  <p-dialog [(visible)]="visibleModalEntregarItemLegitmoDono" [modal]="true"
+    (onHide)="ocorrenciaSelecionada = undefined;" [breakpoints]="{ '1199px': '45vw', '575px': '95vw' }"
+    [style]="{ width: '38vw' }" styleClass="custom-delivery-dialog rounded-[50px]! ">
+
+    <!-- HEADER -->
+    <ng-template #header>
+      <div class="flex items-center gap-3">
+        <div class="bg-green-100 p-2 px-3 rounded-full">
+          <i class="pi pi-check-circle text-green-600 text-xl"></i>
+        </div>
+        <div>
+          <h3 class="font-bold text-xl text-surface-900 m-0">Solicitação de Entrega</h3>
+          <p class="text-xs text-surface-500 font-normal">Finalize o processo de devolução do item</p>
+        </div>
+      </div>
+    </ng-template>
+
+    @if(visibleModalEntregarItemLegitmoDono){
+    <app-confirmar-entrega-component [ocorrencia]="ocorrenciaSelecionada!" (onSucesso)="carregarOcorrencias()"
+      (onCancel)="visibleModalEntregarItemLegitmoDono = false"></app-confirmar-entrega-component>
+    }
+  </p-dialog>

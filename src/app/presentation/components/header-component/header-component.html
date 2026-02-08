@@ -1,0 +1,84 @@
+<p-toolbar [class]="'bg-surface-50'"
+  class=" backdrop-blur-2x rounded-full! border-b bg-primary border-gray-200 h-20 px-4 md:px-8 border-none flex justify-between items-center shadow-none">
+
+  <!-- Template Esquerda: Logo -->
+  <ng-template pTemplate="start">
+    <div class="flex items-center gap-2 cursor-pointer">
+      <!-- Container do ícone usando sua variável de cor -->
+      <div pRipple [routerLink]="['/']" routerLinkActive="active-link-home"
+        class="flex items-center gap-3 relative z-10 cursor-pointer ">
+        <div class="bg-white p-2 rounded-2xl flex items-center justify-center">
+          <i class="pi pi-search text-primary text-2xl"></i>
+        </div>
+
+        <p class="text-3xl m-0 font-black pr-3 text-white tracking-tighter italic">
+          PODAP
+        </p>
+      </div>
+
+      <!-- MENU DE NAVEGAÇÃO -->
+      @if (usuarioLogado?.policial) {
+      <nav class="flex items-center gap-6 text-white font-semibold">
+        <a routerLink="/dashboard" routerLinkActive="menu-active" class="menu-link hidden!">
+          <i class="pi pi-home mr-2"></i>
+          Dashboard
+        </a>
+
+        <a routerLink="/esquadra" routerLinkActive="menu-active" class="menu-link">
+          <i class="pi pi-users mr-2"></i>
+          Esquadra
+        </a>
+
+        <a routerLink="/gestao-anuncios" routerLinkActive="menu-active" class="menu-link">
+          <i class="pi pi-megaphone mr-2"></i>
+          Anúncios
+        </a>
+      </nav>
+      }
+    </div>
+  </ng-template>
+
+  <!-- Template Centro: Busca -->
+  <ng-template pTemplate="center">
+    <div class="">
+      <!-- Componente moderno de busca do PrimeNG -->
+      <input pInputText (input)="onSearch($event)" placeholder="Procurar Itens..." class="bg-gray-100! min-w-120" />
+    </div>
+  </ng-template>
+
+  <!-- Template Direita: Ações -->
+  <ng-template pTemplate="end">
+    <div class="flex items-center gap-3">
+
+      @if (usuarioLogado) {
+      <p-button [routerLink]="['/anunciar']" label="Novo Anúncio" icon="pi pi-megaphone pr-2!" size="large"
+        class="text-sm font-bold tracking-wide" severity="warn" size="small">
+      </p-button>
+
+      <button pButton [routerLink]="['/perfil']"
+        routerLinkActive="!bg-white/70 !ring-1 !ring-white/20 !shadow-[0_0_15px_rgba(255,255,255,0.1)]"
+        severity="primary" size="small" class="p-0.5! m-0! min-w-0 rounded-full flex items-center"
+        styleCass="m-0! shadow-2xl" text="true">
+        <div class="flex items-center gap-2 m-0! p-0!">
+          <span class="hidden md:inlin font-bold m-0 p-0">
+            {{usuarioLogado.nome | capitalizar_palavra_pipe}}
+          </span>
+
+          <img src="{{usuarioLogado.fotoUrl}}" class="w-10 h-10 rounded-full object-cover block" />
+        </div>
+      </button>
+      } @else{
+      <p-button [routerLink]="['/login']" styleClass="!text-primary !rounded-full" size="small">
+        <ng-template pTemplate="content">
+          <div class="flex items-center gap-2 m-0 p-0">
+            <i class="pi pi-sign-in text-lg"></i>
+            <span class="hidden md:inline font-bold">Fazer Login</span>
+          </div>
+        </ng-template>
+      </p-button>
+      }
+
+    </div>
+  </ng-template>
+
+</p-toolbar>

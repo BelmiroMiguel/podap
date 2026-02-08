@@ -1,0 +1,205 @@
+@import "primeicons/primeicons.css";
+
+body {
+  // Default the application to a light color theme. This can be changed to
+  // `dark` to enable the dark color theme, or to `light dark` to defer to the
+  // user's system settings.
+  color-scheme: light;
+
+  // Set a default background, font and text colors for the application using
+  // Angular Material's system-level CSS variables. Learn more about these
+  // variables at https://material.angular.dev/guide/system-variables
+  background-color: var(--mat-sys-surface);
+  color: var(--mat-sys-on-surface);
+  font: var(--mat-sys-body-medium);
+
+  // Reset the user agent margin.
+  margin: 0;
+  height: 100%;
+}
+
+/* You can add global styles to this file, and also import other style files */
+
+/* Ajuste fino para o input do material ficar mais arredondado como no design */
+:host ::ng-deep .mat-mdc-form-field-flex {
+  border-radius: 9999px !important;
+  background-color: #f3f4f6 !important;
+  /* gray-100 */
+}
+
+:host ::ng-deep .mat-mdc-form-field-notched-outline {
+  border: none !important;
+}
+
+
+/* Força o preview do p-image ficar acima de tudo */
+:host ::ng-deep .p-image-original {
+  z-index: 9999 !important;
+}
+
+
+:root {
+  /* CORES OFICIAIS PNA */
+  --pna-blue-vibrant: #140054;
+  /* Header / Interação */
+  --pna-blue-deep: #140054;
+  /* Logo / Texto Forte */
+  --pna-blue-sky: #038FD5;
+  /* Hero / Banners */
+
+  /* MAPEAMENTO PARA VARIÁVEIS DO SEU TEMA */
+
+  /* PRIMARY (Azure -> Agora PNA Blue) */
+  --color-primary: var(--pna-blue-vibrant);
+  --color-on-primary: #ffffff;
+  --color-primary-container: var(--pna-blue-deep);
+  --color-on-primary-container: #ffffff;
+
+  /* ACCENT / TERTIARY (Blue -> Agora PNA Sky) */
+  --color-accent: var(--pna-blue-sky);
+  --color-on-accent: #ffffff;
+  --color-accent-container: #e0f2fe;
+  --color-on-accent-container: var(--pna-blue-sky);
+
+  /* SURFACES */
+  --color-surface: #ffffff;
+  --color-surface-variant: #f3f4f6;
+  --color-outline: #e5e7eb;
+
+  /* OVERRIDE PARA COMPONENTES MATERIAL (Forçar Material a usar PNA) */
+  --mat-sys-primary: var(--color-primary);
+  --mat-sys-on-primary: var(--color-on-primary);
+  --mat-sys-tertiary: var(--color-accent);
+  --mat-sys-surface: var(--color-surface);
+}
+
+// O seu mapa SASS e o loop @each continuarão funcionando perfeitamente
+// e agora gerarão .bg-primary com a cor #3B84FD.
+$my-theme-colors: (
+  // --- PRIMARY (AZURE) ---
+  "primary": var(--color-primary),
+  // Cor principal (Botões, estados ativos)
+  "on-primary": var(--color-on-primary),
+  // Texto sobre a cor principal
+  "primary-container": var(--color-primary-container),
+  // Fundo suave (Cards destacados, Chips selecionados)
+  "on-primary-container": var(--color-on-primary-container),
+  // Texto dentro do fundo suave
+
+  // --- ACCENT / TERTIARY (BLUE) ---
+  "accent": var(--color-accent),
+  // Cor secundária para variedade visual
+  "on-accent": var(--color-on-accent),
+  // Texto sobre a cor secundária
+  "accent-container": var(--color-accent-container),
+  // Fundo suave secundário
+  "on-accent-container": var(--color-on-accent-container),
+  // Texto dentro do fundo secundário suave
+
+  // --- SURFACES & OUTLINES ---
+  "surface": var(--color-surface),
+  // Fundo geral da página (Baixíssima densidade)
+  "surface-variant": var(--color-surface-variant),
+  // Fundo de inputs ou áreas de menor destaque
+  "outline": var(--color-outline) // Cor de bordas e divisores
+);
+
+// --- GERADOR DE CLASSES UTILITÁRIAS (Estilo Bootstrap/Tailwind) ---
+$opacities: (
+  5: 0.05,
+  10: 0.1,
+  20: 0.2,
+  30: 0.3,
+  40: 0.4,
+  50: 0.5,
+  60: 0.6,
+  70: 0.7,
+  80: 0.8,
+  90: 0.9
+);
+
+@each $name, $value in $my-theme-colors {
+
+  /* =========================
+     BASE
+  ========================== */
+
+  .bg-#{$name} {
+    background-color: #{$value} !important;
+  }
+
+  .text-#{$name} {
+    color: #{$value} !important;
+  }
+
+  .border-#{$name} {
+    border-color: #{$value} !important;
+  }
+
+  /* =========================
+     OPACITY VARIANTS
+     ex: bg-primary/20
+  ========================== */
+
+  @each $key, $opacity in $opacities {
+    .bg-#{$name}\/#{$key} {
+      background-color: rgba($value, $opacity) !important;
+    }
+
+    .text-#{$name}\/#{$key} {
+      color: rgba($value, $opacity) !important;
+    }
+
+    .border-#{$name}\/#{$key} {
+      border-color: rgba($value, $opacity) !important;
+    }
+  }
+
+  /* =========================
+     HOVER
+     ex: hover:bg-primary
+  ========================== */
+
+  .hover\:bg-#{$name}:hover {
+    background-color: #{$value} !important;
+  }
+
+  .hover\:text-#{$name}:hover {
+    color: #{$value} !important;
+  }
+
+  /* =========================
+     RING / OUTLINE
+     ex: ring-primary
+  ========================== */
+
+  .ring-#{$name} {
+    box-shadow: 0 0 0 2px rgba($value, 0.4) !important;
+  }
+
+  .outline-#{$name} {
+    outline: 2px solid rgba($value, 0.5) !important;
+  }
+
+  /* =========================
+     GRADIENT
+     ex: bg-gradient-primary
+  ========================== */
+
+  .bg-gradient-#{$name} {
+    background: linear-gradient(135deg,
+        rgba($value, 0.9),
+        rgba($value, 0.4)) !important;
+  }
+
+  /* =========================
+     OVERLAY
+     ex: overlay-primary
+  ========================== */
+
+  .overlay-#{$name} {
+    background-color: rgba($value, 0.6);
+    position: absolute;
+    inset: 0;
+  }
+}

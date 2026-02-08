@@ -1,0 +1,23 @@
+/* Custom Button Dark */
+:host ::ng-deep .p-button-black {
+    background: #000000 !important;
+    border-color: #000000 !important;
+    color: #ffffff !important;
+    &:hover {
+        background: #222222 !important;
+    }
+}
+
+/* Ajuste das Imagens PrimeNG */
+:host ::ng-deep .p-image-preview-indicator {
+    border-radius: 3rem !important;
+}
+
+/* Esconder Scrollbar mas manter funcionalidade */
+main::-webkit-scrollbar {
+    display: none;
+}
+main {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}

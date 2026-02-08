@@ -1,0 +1,43 @@
+<div class="flex flex-col md:flex-row bg-slate-50 pt-20">
+
+  <!-- LADO ESQUERDO: PERFIL (FIXO) -->
+  <div class="hidden  md:flex md:w-5/12 lg:w-[38%] p-8 md:p-16 flex-col justify-between sticky top-0 overflow-hidden">
+
+    <div class="relative z-10">
+      <h1 class="text-4xl lg:text-6xl font-black leading-tight mb-6">
+        Gestão de Anúncios
+      </h1>
+
+      <p class="text-xl opacity-90 max-w-md mb-12 leading-relaxed">
+        Aqui você pode visualizar e gerenciar os registros de achados e perdidos vinculados à sua unidade policial,
+        mantendo o controle completo sobre as informações.
+      </p>
+      <div class="space-y-6">
+
+        <!-- Cabeçalho da Seção -->
+        <div class="flex items-center gap-3">
+          <div class="h-px w-12 bg-black/40"></div>
+          <span class="text-sm font-bold uppercase tracking-widest opacity-70">
+            Esquadra
+          </span>
+        </div>
+
+        <!-- Perfil Principal -->
+        <div class="flex items-start gap-6">
+          <!-- outros filtros aqui talvez -->
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- LADO DIREITO: DADOS (SCROLL) -->
+  <div class="flex-1 md:ml-[21.666%]lg:ml-[25%] bg-slate-5">
+    <main class="max-w-2x mx-aut px-6 pb-12 lg:py-20 space-y-8">
+      <app-lista-ocorrencias-component titulo="Registos de Achados e Perdidos"
+        [isPolicial]="true"></app-lista-ocorrencias-component>
+    </main>
+  </div>
+</div>
