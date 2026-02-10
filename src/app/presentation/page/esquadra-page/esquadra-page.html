@@ -39,24 +39,27 @@
             </h3>
 
             <!-- Cargo / Local -->
+            @if(usuarioLogado.policial){
             <p class="text-gray-500  opacity-80">
-              Luanda · Município do Benfica<br>
-              Centro Benfica frente a bombas de combustível
+              {{ usuarioLogado.tipoUsuario == 'POLICIAL' ? 'Policial' : 'cidadão'}} ·
+              {{ usuarioLogado.policial.esquadra?.nome | capitalizar_palavra_pipe }}<br>
+              {{ usuarioLogado.policial.esquadra?.endereco | capitalizar_palavra_pipe }}
             </p>
+            }
 
             <!-- Informações rápidas -->
             <div class="space-y-1 text-sm text-gray-600">
               <p>
                 <span class="font-bold">E-mail:</span>
-                ---
+                {{ usuarioLogado.email | lowercase}}
               </p>
               <p>
                 <span class="font-bold">Telefone:</span>
-                +244 923 000 000
+                {{ usuarioLogado.telefone | lowercase}}
               </p>
               <p>
-                <span class="font-bold">Emergência ligar para:</span>
-                113
+                <span class="font-bold">Identificação:</span>
+                {{ usuarioLogado.tipoIdentificacao | uppercase}} · {{ usuarioLogado.identificacao }}
               </p>
             </div>
           </div>
@@ -136,7 +139,7 @@
         <div class="bg-white !rounded-[2.5rem] shadow-sm border border-slate-200 overflow-hidden">
           <p-table [value]="usuariosCarregados" [paginator]="true" [totalRecords]="paginacao.totalItems" [lazy]="true"
             (onLazyLoad)="carregarUsuarios($event)" [loading]="isLoadPoliciais" [tableStyle]="{ 'min-width': '60rem' }"
-            styleClass="p-datatable-sm" [rows]="paginacao.limit">
+            styleClass="p-datatable-sm" [rows]="paginacao.limit" [rowHover]="true">
             <ng-template #header>
               <tr class="!border-none">
                 <th class="!bg-slate-50 !py-6 !pl-8 text-[10px] font-black text-slate-400 uppercase tracking-widest">
@@ -264,7 +267,7 @@
       </div>
     </div>
   </ng-template>
-  
+
   @if(visibleModalCadastrarPolicial){
   <app-cadastro-usuario-form-component [edicao]="!novoPolicial" [mostrarBtnCancelar]="true" [tipoUsuario]="'POLICIAL'"
     (onCadastro)="carregarUsuarios()" [usuario]="usuarioSelecionado"

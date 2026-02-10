@@ -138,7 +138,7 @@
 
     <div class="bg-white !rounded-[2.5rem] shadow-sm border border-slate-200 overflow-hidden">
       <p-table [value]="ocorrenciasCarregadas" [loading]="isLoadOcorrencia" [tableStyle]="{ 'min-width': '60rem' }"
-        styleClass="p-datatable-sm">
+        styleClass="p-datatable-sm" [rowHover]="true">
 
         <ng-template #header>
           <tr class="!border-none">
@@ -178,6 +178,7 @@
             <td>
               <p-message [severity]="ocorrencia.tipoOcorrencia == 'PERDIDO' ? 'error': 'success'" variant="simple"
                 size="small" text="{{ ocorrencia.tipoOcorrencia }}"></p-message>
+              {{ocorrencia.usuario.nome}}
             </td>
 
             <!-- Categoria -->
